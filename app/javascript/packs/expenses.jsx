@@ -1,5 +1,6 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
+import PropTypes from 'prop-types'
 
 class Hello extends React.Component {
   render() {
@@ -14,7 +15,7 @@ class Hello extends React.Component {
 
   static get propTypes() {
     return {
-      name: React.PropTypes.string
+      name: PropTypes.string
     }
   }
 }
