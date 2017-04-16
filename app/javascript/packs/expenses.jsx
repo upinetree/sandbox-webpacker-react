@@ -57,6 +57,18 @@ class ModalFull extends React.Component {
     )
   }
 
+  componentDidMount() {
+    document.body.classList.toggle('noscroll', this.state.active);
+  }
+
+  componentDidUpdate() {
+    document.body.classList.toggle('noscroll', this.state.active);
+  }
+
+  componentWillUnmount() {
+    document.body.classList.remove('noscroll');
+  }
+
   handleClose(e) {
     this.props.observer.deactivate();
   }
