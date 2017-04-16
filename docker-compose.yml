@@ -1,0 +1,7 @@
+app:
+  image: ruby:2.4.1
+  ports:
+    - "3000:3000"
+  volumes:
+    - ./:/var/www/app/current
+  working_dir: /var/www/app/current
