@@ -106,7 +106,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const modal = ReactDOM.render(
     <ModalFull observer={observer} />,
-    document.getElementById('react-modal-root')
+    document.body.appendChild(document.createElement('div'))
   )
 
   const activator = ReactDOM.render(

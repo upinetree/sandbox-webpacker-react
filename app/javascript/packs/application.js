@@ -1,1 +1,1 @@
-import 'packs/expenses'
+import 'packs/modal-full'
