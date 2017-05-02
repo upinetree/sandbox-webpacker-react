@@ -3,29 +3,35 @@ import ReactDOM from 'react-dom'
 import PropTypes from 'prop-types'
 import classNames from 'classnames'
 
-class ModalObserver {
-  constructor() {
+class ModalStore {
+  constructor(observer) {
     this.state = { active: false };
-    this.listeners = [];
+    this.observer = observer;
   }
 
   activate() {
     this.state.active = true;
-    this.notify();
+    this.observer.notify(this.state);
   }
 
   deactivate()  {
     this.state.active = false;
-    this.notify();
+    this.observer.notify(this.state);
+  }
+}
+
+class ModalObserver {
+  constructor() {
+    this.listeners = [];
   }
 
   register(listeners) {
     this.listeners = listeners;
   }
 
-  notify() {
+  notify(state) {
     this.listeners.forEach(l => {
-      l.setState({ active: this.state.active })
+      l.setState({ active: state.active })
     })
   }
 }
@@ -70,7 +76,7 @@ class ModalFull extends React.Component {
   }
 
   handleClose(e) {
-    this.props.observer.deactivate();
+    this.props.store.deactivate();
   }
 
   static get defaultProps() {
@@ -97,20 +103,21 @@ class ModalActivator extends React.Component {
   }
 
   handleOpen(e) {
-    this.props.observer.activate();
+    this.props.store.activate();
   }
 }
 
 document.addEventListener('DOMContentLoaded', () => {
   const observer = new ModalObserver();
+  const modalStore = new ModalStore(observer);
 
   const modal = ReactDOM.render(
-    <ModalFull observer={observer} />,
+    <ModalFull store={modalStore} />,
     document.body.appendChild(document.createElement('div'))
   )
 
   const activator = ReactDOM.render(
-    <ModalActivator observer={observer} />,
+    <ModalActivator store={modalStore} />,
     document.getElementById('react-root')
   )
 
