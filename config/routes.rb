@@ -1,3 +1,6 @@
 Rails.application.routes.draw do
-  resources :expenses
+  controller 'modal_full_test' do
+    get 'modal_full/mediator'
+    get 'modal_full/observer'
+  end
 end
