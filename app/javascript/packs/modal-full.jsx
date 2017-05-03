@@ -4,23 +4,23 @@ import PropTypes from 'prop-types'
 import classNames from 'classnames'
 
 class ModalStore {
-  constructor(observer) {
+  constructor(mediator) {
     this.state = { active: false };
-    this.observer = observer;
+    this.mediator = mediator;
   }
 
   activate() {
     this.state.active = true;
-    this.observer.notify(this.state);
+    this.mediator.notify(this.state);
   }
 
   deactivate()  {
     this.state.active = false;
-    this.observer.notify(this.state);
+    this.mediator.notify(this.state);
   }
 }
 
-class ModalObserver {
+class ModalMediator {
   constructor() {
     this.listeners = [];
   }
@@ -30,6 +30,7 @@ class ModalObserver {
   }
 
   notify(state) {
+    // register でコールバックを登録するように実装するとさらに汎用的になる
     this.listeners.forEach(l => {
       l.setState({ active: state.active })
     })
@@ -108,8 +109,8 @@ class ModalActivator extends React.Component {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-  const observer = new ModalObserver();
-  const modalStore = new ModalStore(observer);
+  const mediator = new ModalMediator();
+  const modalStore = new ModalStore(mediator);
 
   const modal = ReactDOM.render(
     <ModalFull store={modalStore} />,
@@ -118,8 +119,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const activator = ReactDOM.render(
     <ModalActivator store={modalStore} />,
-    document.getElementById('react-root')
+    document.getElementById('app')
   )
 
-  observer.register([modal, activator]);
+  mediator.register([modal, activator]);
 });
