@@ -25,8 +25,8 @@ class ModalMediator {
     this.listeners = [];
   }
 
-  register(listeners) {
-    this.listeners = listeners;
+  register(listener) {
+    this.listeners.push(listener);
   }
 
   notify(state) {
@@ -37,11 +37,27 @@ class ModalMediator {
   }
 }
 
+const modalMediator = new ModalMediator();
+const modalStore = new ModalStore(modalMediator);
+
 class ModalFull extends React.Component {
   constructor(props) {
     super(props);
     this.handleClose = this.handleClose.bind(this);
     this.state = { active: props.active }
+  }
+
+  componentDidMount() {
+    modalMediator.register(this);
+    document.body.classList.toggle('noscroll', this.state.active);
+  }
+
+  componentDidUpdate() {
+    document.body.classList.toggle('noscroll', this.state.active);
+  }
+
+  componentWillUnmount() {
+    document.body.classList.remove('noscroll');
   }
 
   render() {
@@ -64,18 +80,6 @@ class ModalFull extends React.Component {
     )
   }
 
-  componentDidMount() {
-    document.body.classList.toggle('noscroll', this.state.active);
-  }
-
-  componentDidUpdate() {
-    document.body.classList.toggle('noscroll', this.state.active);
-  }
-
-  componentWillUnmount() {
-    document.body.classList.remove('noscroll');
-  }
-
   handleClose(e) {
     this.props.store.deactivate();
   }
@@ -95,6 +99,10 @@ class ModalActivator extends React.Component {
     this.handleOpen = this.handleOpen.bind(this);
   }
 
+  componentDidMount() {
+    modalMediator.register(this);
+  }
+
   render() {
     return (
       <div className='modalFull__open' onClick={this.handleOpen}>
@@ -109,18 +117,13 @@ class ModalActivator extends React.Component {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-  const mediator = new ModalMediator();
-  const modalStore = new ModalStore(mediator);
-
-  const modal = ReactDOM.render(
+  ReactDOM.render(
     <ModalFull store={modalStore} />,
     document.body.appendChild(document.createElement('div'))
   )
 
-  const activator = ReactDOM.render(
+  ReactDOM.render(
     <ModalActivator store={modalStore} />,
-    document.getElementById('app')
+    document.getElementById('main')
   )
-
-  mediator.register([modal, activator]);
 });
