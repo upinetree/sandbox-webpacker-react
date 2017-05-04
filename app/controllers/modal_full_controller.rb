@@ -4,4 +4,7 @@ class ModalFullController < ApplicationController
 
   def observer
   end
+
+  def event
+  end
 end
