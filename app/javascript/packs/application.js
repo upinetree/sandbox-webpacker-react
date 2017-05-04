@@ -1,5 +1,5 @@
-import modalFullMediator from 'packs/modal-full-mediator'
-import modalFullObserver from 'packs/modal-full-observer'
+import modalFullMediator from 'packs/modal_full/mediator'
+import modalFullObserver from 'packs/modal_full/observer'
 
 const routes = {
   'modal_full#observer': modalFullObserver,
