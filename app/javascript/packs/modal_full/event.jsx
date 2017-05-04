@@ -4,11 +4,9 @@ import PropTypes from 'prop-types'
 import classNames from 'classnames'
 import EventEmitter from 'wolfy87-eventemitter'
 
-const ee = new EventEmitter();
-
-// Observable
-class ModalStore {
+class ModalStore extends EventEmitter {
   constructor() {
+    super();
     this.state = { active: false };
   }
 
@@ -23,13 +21,13 @@ class ModalStore {
   }
 
   registerObserver(observer) {
-    ee.on('modal/change', () => {
+    this.on('change', () => {
       observer.setState({ active: this.state.active });
     });
   }
 
   emitChange() {
-    ee.emit('modal/change');
+    this.emit('change');
   }
 }
 
