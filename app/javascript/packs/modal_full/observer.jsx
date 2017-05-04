@@ -5,7 +5,7 @@ import classNames from 'classnames'
 
 // Observable
 class ModalStore {
-  constructor(mediator) {
+  constructor() {
     this.state = { active: false };
     this.observers = [];
   }
@@ -26,8 +26,8 @@ class ModalStore {
 
   notify(state) {
     // register でコールバックを登録するように実装するとさらに汎用的になる
-    this.observers.forEach(l => {
-      l.setState({ active: state.active })
+    this.observers.forEach(o => {
+      o.setState({ active: state.active });
     })
   }
 }
