@@ -8,11 +8,11 @@ class ModalStore {
     this.state = { active: false };
   }
 
-  activate(mediator) {
+  activate() {
     this.state.active = true;
   }
 
-  deactivate(mediator)  {
+  deactivate()  {
     this.state.active = false;
   }
 }
@@ -38,7 +38,6 @@ class ModalMediator {
   }
 
   notify(state) {
-    // register でコールバックを登録するように実装するとさらに汎用的になる
     this.listeners.forEach(l => {
       l.setState({ active: state.active })
     })

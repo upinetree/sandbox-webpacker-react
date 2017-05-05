@@ -25,7 +25,7 @@ class ModalStore {
   }
 
   notify(state) {
-    // register でコールバックを登録するように実装するとさらに汎用的になる
+    // register でコールバックを登録するように実装すると依存が減らせる
     this.observers.forEach(o => {
       o.setState({ active: state.active });
     })
