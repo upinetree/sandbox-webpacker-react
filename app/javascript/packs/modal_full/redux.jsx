@@ -57,11 +57,11 @@ class ModalFull extends React.Component {
 
     return (
       <div className={ modalClass }>
-        <div className='modalFull__text'>
-          <div>active: { `${this.props.active}` }</div>
-        </div>
         <div className='modalFull__close' onClick={this.onCloseClick}>
           [x] close
+        </div>
+        <div className='modalFull__text'>
+          <div>active: { `${this.props.active}` }</div>
         </div>
       </div>
     )
