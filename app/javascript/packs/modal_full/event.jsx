@@ -1,8 +1,8 @@
-import React from 'react'
-import ReactDOM from 'react-dom'
-import PropTypes from 'prop-types'
-import classNames from 'classnames'
-import EventEmitter from 'wolfy87-eventemitter'
+import React from 'react';
+import ReactDOM from 'react-dom';
+import PropTypes from 'prop-types';
+import classNames from 'classnames';
+import EventEmitter from 'wolfy87-eventemitter';
 
 class ModalStore extends EventEmitter {
   constructor() {

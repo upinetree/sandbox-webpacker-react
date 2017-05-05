@@ -1,7 +1,7 @@
-import React from 'react'
-import ReactDOM from 'react-dom'
-import PropTypes from 'prop-types'
-import classNames from 'classnames'
+import React from 'react';
+import ReactDOM from 'react-dom';
+import PropTypes from 'prop-types';
+import classNames from 'classnames';
 
 // Observable
 class ModalStore {
@@ -115,11 +115,11 @@ export default function () {
     ReactDOM.render(
       <ModalFull store={modalStore} />,
       document.body.appendChild(document.createElement('div'))
-    )
+    );
 
     ReactDOM.render(
       <ModalActivator store={modalStore} />,
       document.getElementById('main')
-    )
+    );
   });
 };

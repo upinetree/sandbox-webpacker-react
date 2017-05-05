@@ -2,57 +2,63 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
+import { Dispatcher } from 'flux';
+import { ReduceStore, Container } from 'flux/utils';
 
-class ModalStore {
-  constructor() {
-    this.state = { active: false };
-  }
+const dispatcher = new Dispatcher();
 
+const ActionTypes = {
+  ACTIVATE:   'modal/activate',
+  DEACTIVATE: 'modal/deactivate'
+};
+
+const Actions = {
   activate() {
-    this.state.active = true;
-  }
-
-  deactivate()  {
-    this.state.active = false;
-  }
-}
-
-class ModalMediator {
-  constructor(store) {
-    this.stores = [store]; // 複数あって、多対多のちょっと複雑な環境を想定
-    this.listeners = [];
-  }
-
-  activate() {
-    this.stores.forEach(s => { s.activate(); });
-    this.notify({ active: true });
-  }
+    dispatcher.dispatch({
+      type: ActionTypes.ACTIVATE
+    });
+  },
 
   deactivate() {
-    this.stores.forEach(s => { s.deactivate(); });
-    this.notify({ active: false });
-  }
-
-  register(listener) {
-    this.listeners.push(listener);
-  }
-
-  notify(state) {
-    this.listeners.forEach(l => {
-      l.setState({ active: state.active })
-    })
+    dispatcher.dispatch({
+      type: ActionTypes.DEACTIVATE
+    });
   }
 }
+
+class ModalStore extends ReduceStore {
+  constructor() {
+    super(dispatcher);
+  }
+
+  getInitialState() {
+    return { active: false };
+  }
+
+  reduce(state, action) {
+    switch (action.type) {
+      case ActionTypes.ACTIVATE:
+        return Object.assign({}, state, {
+          active: true
+        });
+      case ActionTypes.DEACTIVATE:
+        return Object.assign({}, state, {
+          active: false
+        });
+      default:
+        return state;
+    }
+  }
+}
+const modalStore = new ModalStore();
 
 class ModalFull extends React.Component {
   constructor(props) {
     super(props);
-    this.handleClose = this.handleClose.bind(this);
     this.state = { active: props.active }
   }
 
   componentDidMount() {
-    this.props.mediator.register(this);
     document.body.classList.toggle('noscroll', this.state.active);
   }
 
@@ -76,7 +82,7 @@ class ModalFull extends React.Component {
           <div className='modalFull__text'>
             <div>active: { `${this.state.active}` }</div>
           </div>
-          <div className='modalFull__close' onClick={this.handleClose}>
+          <div className='modalFull__close' onClick={Actions.deactivate}>
             [x] close
           </div>
         </div>
@@ -84,8 +90,12 @@ class ModalFull extends React.Component {
     )
   }
 
-  handleClose(e) {
-    this.props.mediator.deactivate();
+  static getStores() {
+    return [modalStore];
+  }
+
+  static calculateState() {
+    return modalStore.getState();
   }
 
   static get defaultProps() {
@@ -96,43 +106,41 @@ class ModalFull extends React.Component {
     return { active: PropTypes.bool }
   }
 }
+const ModalContainer = Container.create(ModalFull);
 
 class ModalActivator extends React.Component {
   constructor(props) {
     super(props);
-    this.handleOpen = this.handleOpen.bind(this);
-  }
-
-  componentDidMount() {
-    this.props.mediator.register(this);
   }
 
   render() {
     return (
-      <div className='modalFull__open' onClick={this.handleOpen}>
+      <div className='modalFull__open' onClick={Actions.activate}>
         [x] open
       </div>
     )
   }
 
-  handleOpen(e) {
-    this.props.mediator.activate();
+  static getStores() {
+    return [modalStore];
+  }
+
+  static calculateState() {
+    return modalStore.getState();
   }
 }
+const ModalActivatorContainer = Container.create(ModalActivator);
 
 export default function () {
   document.addEventListener('DOMContentLoaded', () => {
-    const modalStore = new ModalStore();
-    const modalMediator = new ModalMediator(modalStore);
-
     ReactDOM.render(
-      <ModalFull mediator={modalMediator} />,
+      <ModalContainer />,
       document.body.appendChild(document.createElement('div'))
-    )
+    );
 
     ReactDOM.render(
-      <ModalActivator mediator={modalMediator} />,
+      <ModalActivatorContainer />,
       document.getElementById('main')
-    )
+    );
   });
 };
