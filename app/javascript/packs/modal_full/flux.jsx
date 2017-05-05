@@ -120,16 +120,7 @@ class ModalActivator extends React.Component {
       </div>
     )
   }
-
-  static getStores() {
-    return [modalStore];
-  }
-
-  static calculateState() {
-    return modalStore.getState();
-  }
 }
-const ModalActivatorContainer = Container.create(ModalActivator);
 
 export default function () {
   document.addEventListener('DOMContentLoaded', () => {
@@ -139,7 +130,7 @@ export default function () {
     );
 
     ReactDOM.render(
-      <ModalActivatorContainer />,
+      <ModalActivator />,
       document.getElementById('main')
     );
   });

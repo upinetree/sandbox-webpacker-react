@@ -91,10 +91,6 @@ class ModalActivator extends React.Component {
     this.handleOpen = this.handleOpen.bind(this);
   }
 
-  componentDidMount() {
-    this.props.store.registerObserver(this);
-  }
-
   render() {
     return (
       <div className='modalFull__open' onClick={this.handleOpen}>
