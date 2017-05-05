@@ -4,5 +4,6 @@ Rails.application.routes.draw do
     get 'modal_full/observer'
     get 'modal_full/event'
     get 'modal_full/flux'
+    get 'modal_full/redux'
   end
 end
