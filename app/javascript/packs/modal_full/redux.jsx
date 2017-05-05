@@ -3,13 +3,17 @@ import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { createStore } from 'redux'
+import { connect, Provider } from 'react-redux'
+
+// Reducers
+//------------------------------------------------
 
 const ActionTypes = {
   ACTIVATE:   'modal/activate',
   DEACTIVATE: 'modal/deactivate'
 };
 
-function modalReducer(state, action) {
+const modalReducer = (state = { active: false }, action) => {
   switch (action.type) {
     case ActionTypes.ACTIVATE:
       return Object.assign({}, state, {
@@ -24,25 +28,21 @@ function modalReducer(state, action) {
   }
 }
 
-let store = createStore(modalReducer);
+// Components
+//------------------------------------------------
 
 class ModalFull extends React.Component {
   constructor(props) {
     super(props);
-    this.handleClose = this.handleClose.bind(this);
-    this.state = { active: props.active }
+    this.onCloseClick = props.onCloseClick
   }
 
   componentDidMount() {
-    const self = this;
-    this.props.store.subscribe(() => {
-      self.setState(self.props.store.getState());
-    });
-    document.body.classList.toggle('noscroll', this.state.active);
+    document.body.classList.toggle('noscroll', this.props.active);
   }
 
   componentDidUpdate() {
-    document.body.classList.toggle('noscroll', this.state.active);
+    document.body.classList.toggle('noscroll', this.props.active);
   }
 
   componentWillUnmount() {
@@ -52,64 +52,75 @@ class ModalFull extends React.Component {
   render() {
     const modalClass = classNames(
       'modalFull',
-      { 'modalFull_active': this.state.active, }
+      { 'modalFull_active': this.props.active, }
     );
 
     return (
-      <div>
-        <div className={ modalClass }>
-          <div className='modalFull__text'>
-            <div>active: { `${this.state.active}` }</div>
-          </div>
-          <div className='modalFull__close' onClick={this.handleClose}>
-            [x] close
-          </div>
+      <div className={ modalClass }>
+        <div className='modalFull__text'>
+          <div>active: { `${this.props.active}` }</div>
+        </div>
+        <div className='modalFull__close' onClick={this.onCloseClick}>
+          [x] close
         </div>
       </div>
     )
   }
 
-  handleClose(e) {
-    this.props.store.dispatch({ type: ActionTypes.DEACTIVATE });
-  }
-
-  static get defaultProps() {
-    return { active: false }
-  }
-
   static get propTypes() {
-    return { active: PropTypes.bool }
+    return {
+      active: PropTypes.bool,
+      onCloseClick: PropTypes.func.isRequired
+    }
   }
 }
 
-class ModalActivator extends React.Component {
-  constructor(props) {
-    super(props);
-    this.handleOpen = this.handleOpen.bind(this);
-  }
+const ModalFullContainer = function() {
+  const mapStateToProps = state => {
+    return {
+      active: state.active
+    };
+  };
 
-  render() {
-    return (
-      <div className='modalFull__open' onClick={this.handleOpen}>
-        [x] open
-      </div>
-    )
-  }
+  const mapDispatchToProps = dispatch => {
+    return {
+      onCloseClick: () => {
+        dispatch({ type: ActionTypes.DEACTIVATE });
+      }
+    };
+  };
 
-  handleOpen(e) {
-    this.props.store.dispatch({ type: ActionTypes.ACTIVATE });
-  }
-}
+  return connect(mapStateToProps, mapDispatchToProps)(ModalFull);
+}();
+
+const ModalActivator = props => {
+  return (
+    <div className='modalFull__open' onClick={props.onOpenClick}>
+      [x] open
+    </div>
+  )
+};
+
+// Entry Point
+//------------------------------------------------
 
 export default function () {
+  let store = createStore(modalReducer);
+
+  const handleOpenClick = (e) => {
+    store.dispatch({ type: ActionTypes.ACTIVATE });
+  };
+
   document.addEventListener('DOMContentLoaded', () => {
     ReactDOM.render(
-      <ModalFull store={store} />,
+      <Provider store={store}>
+        <ModalFullContainer />
+      </Provider>,
       document.body.appendChild(document.createElement('div'))
     );
 
     ReactDOM.render(
-      <ModalActivator store={store} />,
+      <ModalActivator store={store} onOpenClick={handleOpenClick} />,
       document.getElementById('main')
     );
   });

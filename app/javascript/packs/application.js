@@ -1,15 +1,17 @@
-import modalFullMediator from 'packs/modal_full/mediator'
-import modalFullObserver from 'packs/modal_full/observer'
-import modalFullEvent    from 'packs/modal_full/event'
-import modalFullFlux     from 'packs/modal_full/flux'
-import modalFullRedux    from 'packs/modal_full/redux'
+import modalFullMediator    from 'packs/modal_full/mediator'
+import modalFullObserver    from 'packs/modal_full/observer'
+import modalFullEvent       from 'packs/modal_full/event'
+import modalFullFlux        from 'packs/modal_full/flux'
+import modalFullSimpleRedux from 'packs/modal_full/simple_redux'
+import modalFullRedux       from 'packs/modal_full/redux'
 
 const routes = {
-  'modal_full#observer': modalFullObserver,
-  'modal_full#mediator': modalFullMediator,
-  'modal_full#event':    modalFullEvent,
-  'modal_full#flux':     modalFullFlux,
-  'modal_full#redux':    modalFullRedux,
+  'modal_full#observer':     modalFullObserver,
+  'modal_full#mediator':     modalFullMediator,
+  'modal_full#event':        modalFullEvent,
+  'modal_full#flux':         modalFullFlux,
+  'modal_full#simple_redux': modalFullSimpleRedux,
+  'modal_full#redux':        modalFullRedux,
   'default': new Function()
 }
 
