@@ -85,24 +85,17 @@ class ModalFull extends React.Component {
   }
 }
 
-class ModalActivator extends React.Component {
-  constructor(props) {
-    super(props);
-    this.handleOpen = this.handleOpen.bind(this);
+const ModalActivator = (props) => {
+  const handleOpen = (e) => {
+    props.store.activate();
   }
 
-  render() {
-    return (
-      <div className='modalFull__open' onClick={this.handleOpen}>
-        [x] open
-      </div>
-    )
-  }
-
-  handleOpen(e) {
-    this.props.store.activate();
-  }
-}
+  return (
+    <div className='modalFull__open' onClick={handleOpen}>
+      [x] open
+    </div>
+  )
+};
 
 export default function () {
   document.addEventListener('DOMContentLoaded', () => {
